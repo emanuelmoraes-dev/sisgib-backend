@@ -9,7 +9,7 @@ const Livro = new Entity({
 	methods: ['get'],
 	descriptor: {
 		titulo: { type: String, required: true },
-		volume: { type: String, required: true },
+		volume: { type: Number, required: true },
 		categoria: { type: String, required: true },
 		autor: {
 			id: ObjectId,
