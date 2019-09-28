@@ -1,16 +1,17 @@
-const { Entity } =  require('alpha-restful')
+const { Entity } = require('alpha-restful')
 const restful = require('../global/restful')
-const mongoose = require('mongoose')
-const ObjectId = mongoose.Schema.Types.ObjectId
 
 const Aluno = new Entity({
 	name: 'Aluno',
 	resource: 'alunos',
 	methods: ['get'],
 	descriptor: {
-		nome: { type: String, requried: true },
-		matricula: { type: String, requried: true },
-		senha: { type: String, required: true }
+		nome: { type: String, required: true },
+		email: { type: String, unique: true },
+		matricula: { type: String, unique: true, required: true },
+		senha: { type: String, required: true },
+		inicioPenalizacao: { type: Date },
+		duracaoPednalizacao: { type: Number }
 	},
 	sync: {
 		emprestimos: {

@@ -1,5 +1,3 @@
 exports.Aluno = require('./aluno')
-exports.Autor = require('./autor')
-exports.Editora = require('./editora')
 exports.Emprestimo = require('./emprestimo')
 exports.Livro = require('./livro')
