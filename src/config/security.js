@@ -38,7 +38,7 @@ router.post('/login', (req, res, next) => {
 
 router.post('/auth', (req, res, next) => {
 	let access_token = req.cookies['x-access-token']
-	if (!access_token) return next({ status: 400, message: 'No access token provided.' })
+	if (!access_token) return next({ status: 401, message: 'No access token provided.' })
 
 	let user
 
@@ -75,8 +75,8 @@ function verifyToken(req, res, next) {
 	let access_token = req.cookies['x-access-token']
 	let refresh_token = req.headers['x-refresh-token']
 
-	if (!access_token) return next({ status: 400, message: 'No access token provided.' })
-	if (!refresh_token) return next({ status: 400, message: 'No refresh token provided.' })
+	if (!access_token) return next({ status: 401, message: 'No access token provided.' })
+	if (!refresh_token) return next({ status: 401, message: 'No refresh token provided.' })
 
 	jwt.verify(access_token, ACCESS_SECRET)
 		.catch(function (err) {
