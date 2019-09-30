@@ -2,6 +2,8 @@ const express = require('express')
 const router = express.Router()
 const jwt = require('jwt-then')
 const cors = require('cors')
+const restful = require('../global/restful')
+const { Aluno } = require('../models')
 
 const internalLogin = 'e072dcc5-d2aa-4e87-ac2e-80c1af8305f2'
 const internalPassword = '6fdd7070-cc8b-43f6-8e42-fc9ed0eea5cc'
@@ -24,9 +26,11 @@ router.post('/login', (req, res, next) => {
 	}
 
 	if (f.email === internalLogin && f.password === internalPassword) {
-		jwt.sign({ user: {} }, ACCESS_SECRET, {
+		restful.query({}, Aluno, { findOne: true })
+		.then(user => jwt.sign({ user }, ACCESS_SECRET, {
 			expiresIn: EXPIRES_ACCESS
-		}).then(function (access_token) {
+		}))
+		.then(function (access_token) {
 			res.status(200).cookie('x-access-token', access_token).send({ access_token })
 		}).catch(function (err) {
 			next(err)
