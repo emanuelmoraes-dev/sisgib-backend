@@ -1,4 +1,4 @@
-const { scape, toDate, getMinPattern, dateToStr, dateEquals, PERIODS } = require('datetime-utility')
+const { scape, toDate, getMinPattern, dateToStr, dateEquals, PERIODS, plus } = require('datetime-utility')
 const express = require('express')
 const router = express.Router()
 const restful = require('../global/restful')
@@ -6,20 +6,20 @@ const { Livro } = require('../models')
 
 router.get('/defaultSearch', restful.execAsync(async (req, res, next) => {
 	let { search, skip, limit, sort } = req.query
-	let searchNumber = parseFloat(search)
-	let searchRegex = new RegExp(`^${scape(search)}$`, 'i')
+	const searchNumber = parseFloat(search)
+	const searchRegex = new RegExp(`^${scape(search)}$`, 'i')
 	skip = parseInt(skip)
 	limit = parseInt(limit)
 
-	let dataEmprestimoFilter = getWhereDateBySearch(search, 'dataEmprestimo')
-	let dataDevolucaoFilter = getWhereDateBySearch(search, 'dataDevolucao')
+	const dataEmprestimoFilter = getWhereDateBySearch(search, 'dataEmprestimo')
+	const dataDevolucaoFilter = getWhereDateBySearch(search, 'dataDevolucao')
 
-	let find = {
+	const find = {
 		$or: [
-			dataEmprestimoFilter ? dataEmprestimoFilter : null,
-			dataDevolucaoFilter ? dataDevolucaoFilter : null,
-			search.toLowerCase() === 'sim' || search.toLowerCase() === 'não' ?
-				{ ativo: search.toLowerCase() === 'sim' ? 1 : 0 } : null,
+			dataEmprestimoFilter || null,
+			dataDevolucaoFilter || null,
+			search.toLowerCase() === 'sim' || search.toLowerCase() === 'não'
+				? { ativo: search.toLowerCase() === 'sim' ? 1 : 0 } : null,
 			{ 'livro.titulo': searchRegex },
 			searchNumber ? { 'livro.volume': searchNumber } : null,
 			{ 'livro.categoria': searchRegex },
@@ -31,28 +31,27 @@ router.get('/defaultSearch', restful.execAsync(async (req, res, next) => {
 		]
 	}
 
-	find.$or = find.$or.filter(f !== null)
+	find.$or = find.$or.filter(f => f !== null)
 
 	res._content_ = await restful.query(find, Livro, {
 		skip, limit, sort
 	})
-
 }, 200))
 
 router.get('/defaultSearch/count', restful.execAsync(async (req, res, next) => {
-	let { search } = req.query
-	let searchNumber = parseFloat(search)
-	let searchRegex = new RegExp(`^${scape(search)}$`, 'i')
+	const { search } = req.query
+	const searchNumber = parseFloat(search)
+	const searchRegex = new RegExp(`^${scape(search)}$`, 'i')
 
-	let dataEmprestimoFilter = getWhereDateBySearch(search, 'dataEmprestimo')
-	let dataDevolucaoFilter = getWhereDateBySearch(search, 'dataDevolucao')
+	const dataEmprestimoFilter = getWhereDateBySearch(search, 'dataEmprestimo')
+	const dataDevolucaoFilter = getWhereDateBySearch(search, 'dataDevolucao')
 
-	let find = {
+	const find = {
 		$or: [
-			dataEmprestimoFilter ? dataEmprestimoFilter : null,
-			dataDevolucaoFilter ? dataDevolucaoFilter : null,
-			search.toLowerCase() === 'sim' || search.toLowerCase() === 'não' ?
-				{ ativo: search.toLowerCase() === 'sim' ? 1 : 0 } : null,
+			dataEmprestimoFilter || null,
+			dataDevolucaoFilter || null,
+			search.toLowerCase() === 'sim' || search.toLowerCase() === 'não'
+				? { ativo: search.toLowerCase() === 'sim' ? 1 : 0 } : null,
 			{ 'livro.titulo': searchRegex },
 			searchNumber ? { 'livro.volume': searchNumber } : null,
 			{ 'livro.categoria': searchRegex },
@@ -64,28 +63,27 @@ router.get('/defaultSearch/count', restful.execAsync(async (req, res, next) => {
 		]
 	}
 
-	find.$or = find.$or.filter(f !== null)
+	find.$or = find.$or.filter(f => f !== null)
 
 	res._content_ = await restful.query(find, Livro, {
 		selectCount: true
 	})
-
 }, 200))
 
 router.get('/defaultSearch/onlyActive', restful.execAsync(async (req, res, next) => {
 	let { search, skip, limit, sort } = req.query
-	let searchNumber = parseFloat(search)
-	let searchRegex = new RegExp(`^${scape(search)}$`, 'i')
+	const searchNumber = parseFloat(search)
+	const searchRegex = new RegExp(`^${scape(search)}$`, 'i')
 	skip = parseInt(skip)
 	limit = parseInt(limit)
 
-	let dataEmprestimoFilter = getWhereDateBySearch(search, 'dataEmprestimo')
-	let dataDevolucaoFilter = getWhereDateBySearch(search, 'dataDevolucao')
+	const dataEmprestimoFilter = getWhereDateBySearch(search, 'dataEmprestimo')
+	const dataDevolucaoFilter = getWhereDateBySearch(search, 'dataDevolucao')
 
-	let find = {
+	const find = {
 		$or: [
-			dataEmprestimoFilter ? dataEmprestimoFilter : null,
-			dataDevolucaoFilter ? dataDevolucaoFilter : null,
+			dataEmprestimoFilter || null,
+			dataDevolucaoFilter || null,
 			{ ativo: 1 },
 			{ 'livro.titulo': searchRegex },
 			searchNumber ? { 'livro.volume': searchNumber } : null,
@@ -98,26 +96,25 @@ router.get('/defaultSearch/onlyActive', restful.execAsync(async (req, res, next)
 		]
 	}
 
-	find.$or = find.$or.filter(f !== null)
+	find.$or = find.$or.filter(f => f !== null)
 
 	res._content_ = await restful.query(find, Livro, {
 		skip, limit, sort
 	})
-
 }, 200))
 
 router.get('/defaultSearch/onlyActive/count', restful.execAsync(async (req, res, next) => {
-	let { search } = req.query
-	let searchNumber = parseFloat(search)
-	let searchRegex = new RegExp(`^${scape(search)}$`, 'i')
+	const { search } = req.query
+	const searchNumber = parseFloat(search)
+	const searchRegex = new RegExp(`^${scape(search)}$`, 'i')
 
-	let dataEmprestimoFilter = getWhereDateBySearch(search, 'dataEmprestimo')
-	let dataDevolucaoFilter = getWhereDateBySearch(search, 'dataDevolucao')
+	const dataEmprestimoFilter = getWhereDateBySearch(search, 'dataEmprestimo')
+	const dataDevolucaoFilter = getWhereDateBySearch(search, 'dataDevolucao')
 
-	let find = {
+	const find = {
 		$or: [
-			dataEmprestimoFilter ? dataEmprestimoFilter : null,
-			dataDevolucaoFilter ? dataDevolucaoFilter : null,
+			dataEmprestimoFilter || null,
+			dataDevolucaoFilter || null,
 			{ ativo: 1 },
 			{ 'livro.titulo': searchRegex },
 			searchNumber ? { 'livro.volume': searchNumber } : null,
@@ -130,24 +127,23 @@ router.get('/defaultSearch/onlyActive/count', restful.execAsync(async (req, res,
 		]
 	}
 
-	find.$or = find.$or.filter(f !== null)
+	find.$or = find.$or.filter(f => f !== null)
 
 	res._content_ = await restful.query(find, Livro, {
 		selectCount: true
 	})
-
 }, 200))
 
-function getWhereDateBySearch(search, attr) {
-	let date = toDate(search, 'dd/MM/yyyy hh:mm:ss.z')
+function getWhereDateBySearch (search, attr) {
+	const date = toDate(search, 'dd/MM/yyyy hh:mm:ss.z')
 
 	if (!date)
 		return null
 
-	let pattern = getMinPattern(search, 'dd/MM/yyyy hh:mm:ss.z')
+	const pattern = getMinPattern(search, 'dd/MM/yyyy hh:mm:ss.z')
 
-	let cmpDate1 = new Date(2019, 7, 7, 7, 7, 7, 7)
-	let cmpDate2 = toDate(
+	const cmpDate1 = new Date(2019, 7, 7, 7, 7, 7, 7)
+	const cmpDate2 = toDate(
 		dateToStr(cmpDate1, pattern),
 		pattern
 	)
@@ -180,7 +176,7 @@ function getWhereDateBySearch(search, attr) {
 			[attr]: date
 		}
 
-	let date2 = dateUtility.plus(date, utilPeriod, utilPlus)
+	const date2 = plus(date, utilPeriod, utilPlus)
 
 	return {
 		$and: [
