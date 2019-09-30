@@ -3,6 +3,7 @@ const path = require('path')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
 const security = require('./src/config/security')
+const cons = require('consolidate')
 
 const app = express()
 
@@ -13,7 +14,18 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
+
+// view engine setup
+app.engine('html', cons.swig)
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'html')
+
+app.get('/', (req, res, next) => {
+	res.render('index')
+})
+
 app.use(security)
+
 app.use('/', routers)
 
 const restful = require('./src/global/restful')

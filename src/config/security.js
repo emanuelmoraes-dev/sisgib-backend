@@ -17,7 +17,7 @@ const EXPIRES_ACCESS = 10 * 24 * 60 * 60 // 10 dias
 const EXPIRES_REFRESH = 60 // 60 segundos
 
 router.use(cors({
-	origin: 'http://sisgib.herokuapp.com',
+	origin: 'sisgib.herokuapp.com',
 	credentials: true
 }))
 
