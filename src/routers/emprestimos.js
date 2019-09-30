@@ -36,6 +36,8 @@ router.get('/defaultSearch', restful.execAsync(async (req, res, next) => {
 	res._content_ = await restful.query(find, Emprestimo, {
 		skip, limit, sort
 	})
+
+	next()
 }, 200))
 
 router.get('/defaultSearch/count', restful.execAsync(async (req, res, next) => {
@@ -68,6 +70,8 @@ router.get('/defaultSearch/count', restful.execAsync(async (req, res, next) => {
 	res._content_ = await restful.query(find, Emprestimo, {
 		selectCount: true
 	})
+
+	next()
 }, 200))
 
 router.get('/defaultSearch/onlyActive', restful.execAsync(async (req, res, next) => {
@@ -101,6 +105,8 @@ router.get('/defaultSearch/onlyActive', restful.execAsync(async (req, res, next)
 	res._content_ = await restful.query(find, Emprestimo, {
 		skip, limit, sort
 	})
+
+	next()
 }, 200))
 
 router.get('/defaultSearch/onlyActive/count', restful.execAsync(async (req, res, next) => {
@@ -132,6 +138,8 @@ router.get('/defaultSearch/onlyActive/count', restful.execAsync(async (req, res,
 	res._content_ = await restful.query(find, Emprestimo, {
 		selectCount: true
 	})
+
+	next()
 }, 200))
 
 function getWhereDateBySearch (search, attr) {

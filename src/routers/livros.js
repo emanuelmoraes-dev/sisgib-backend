@@ -31,6 +31,8 @@ router.get('/defaultSearch', restful.execAsync(async (req, res, next) => {
 	res._content_ = await restful.query(find, Livro, {
 		skip, limit, sort
 	})
+
+	next()
 }, 200))
 
 router.get('/defaultSearch/count', restful.execAsync(async (req, res, next) => {
@@ -58,6 +60,8 @@ router.get('/defaultSearch/count', restful.execAsync(async (req, res, next) => {
 	res._content_ = await restful.query(find, Livro, {
 		selectCount: true
 	})
+
+	next()
 }, 200))
 
 module.exports = router
