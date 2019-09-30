@@ -11,7 +11,7 @@ const Aluno = new Entity({
 		matricula: { type: String, unique: true, required: true },
 		senha: { type: String, required: true },
 		inicioPenalizacao: { type: Date },
-		duracaoPednalizacao: { type: Number }
+		duracaoPenalizacao: { type: Number }
 	},
 	sync: {
 		emprestimos: {
