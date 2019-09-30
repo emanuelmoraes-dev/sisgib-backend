@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "initialize": "node index.js",
+    "start": "migrate up --store=\"./db-migrate-store\" && node index.js",
     "init-dev": "cross-env DEBUG=sisgib-backend:* node index.js",
     "migrate": "migrate up --store=\"./db-migrate-store\"",
     "dev": "migrate up --store=\"./db-migrate-store\" && cross-env DEBUG=sisgib-backend:* node index.js",
